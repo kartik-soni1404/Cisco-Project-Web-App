@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DPSE Canteen Portal</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+<!--  <link rel="icon" sizes="192x192" href="images/dpsIcon.jpg"> -->
+<link rel="stylesheet" href="./css/loading_style.css" type="text/css">
+<script src="./js/loading_script.js"></script>
+  <link rel="prefetch" href="./js/script.js">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Oxygen">
+  <link href="https://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ResponsiveSlides.js/1.55/responsiveslides.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-database.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+ <!--Googe fonts-->
+ <link rel="stylesheet"  href="https://fonts.googleapis.com/css?family=Montserrat">
+ <link rel="stylesheet"  href="https://fonts.googleapis.com/css?family=Roboto">
+ <link href="https://fonts.googleapis.com/css?family=Rock+Salt" rel="stylesheet">
+  <script src="js/script.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body id = "theBody" onload="updateMenu()">
+  <div id="wrapper">
+   <div id="slideshow">
+    <div id="page">
+      <div id="phrase_box">
+      <svg width="100%" height="100%">
+        <defs>
+          <!--<style type="text/css">
+            @font-face {
+              font-family: "Proxima";
+              src: url('');
+            }
+          </style>-->
+          <mask id="mask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+            <linearGradient id="linearGradient" gradientUnits="objectBoundingBox" x2="0" y2="1">
+              <stop stop-color="white" stop-opacity="0" offset="0%"/>
+              <stop stop-color="white" stop-opacity="1" offset="30%"/>
+              <stop stop-color="white" stop-opacity="1" offset="70%"/>
+              <stop stop-color="white" stop-opacity="0" offset="100%"/>
+            </linearGradient>
+            <rect width="100%" height="100%" fill="url(#linearGradient)"/>
+          </mask>
+        </defs>
+        <g width="100%" height="100%" style="mask: url(#mask);">
+          <g id="phrases"></g>
+        </g>
+      </svg>
+      </div>
+      <div id="footer">
+        Delhi Public School <br>
+        East <br>
+        <span id="faint">Official Canteen</span>
+      </div>
+      <div id="UserNotRegistered">
+
+      </div>
+      <div class="loader">Loading<span class="loader__dot">.</span><span class="loader__dot">.</span><span class="loader__dot">.</span></div>
+    </div>
+    </div>
+  </div>
+  <!--check-->
+  <!-- Header -->
+  <header>
+    <div class = "container">
+      <div id = "snackbar"></div>
+      <div class="logo">
+        <h1><a href="index.html">Canteen Portal</a></h1>
+      </div>
+      <div class="w3-dropdown-hover w3-right">
+        <img class = "img-responsive img-circle" id = "headerProfilePic" src = "">
+        <div class="w3-dropdown-content w3-bar-block w3-border" style="right:0">
+          <p class="w3-bar-item w3-button" id = "dropdownName"></p>
+          <p class="w3-bar-item w3-button" id = "dropdownWallet">Balance: ₹<span></span></p>
+          <p id = "signOut" onclick = "signOut()" class="w3-bar-item w3-button">Sign Out</p>
+        </div>
+      </div>
+    </div>
+    </header>
+
+    <!-- Transactions Modal -->
+    <div class="modal fade custMod" id="transModal" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" data-dismiss="modal" type="button">&times;</button>
+            <h4 class="modal-title">Transaction History</h4>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Time Stamp</th>
+                    <th>Amount</th>
+                    <th>Payment Medium</th>
+                  </tr>
+                </thead>
+                <tbody id="tranHist"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" type="button">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Vertical tabs -->
+    <br>
+    <br>
+    <div class="categories-section main-grid-border" id="vertTab">
+      <div id = "cont" >
+        <div class="category-list">
+          <div id="parentVerticalTab">
+            <div class="agileits-tab_nav">
+              <ul class="resp-tabs-list hor_1">
+                <li><i aria-hidden="true" class="icon fa fa-id-card-o"></i><span class = "heading">Wallet Topup</span></li>
+                <li><i aria-hidden="true" class="icon fa fa-list"></i><span class = "heading">Transaction History</span></li>
+                <li><i aria-hidden="true" class="icon fa fa-lightbulb-o " ></i><span class = "heading">Creators</span></li>
+                <li><i aria-hidden="true" class="icon fa fa-user-circle-o"></i><span class = "heading">Profile</span></li>
+              </ul>
+            </div>
+
+            <div class="resp-tabs-container hor_1">
+
+              <!-- Wallet Topup -->
+              <div>
+                <div class="tabs-box container-fluid">
+                  <ul class="tabs-menu">
+                    <li><a href="#tab1"><label class="radio-inline" style="outline: none !important;box-shadow: none !important;"><input checked name="radio" type="radio"><i></i>Menu</label></a></li>
+                    <li><a href="#tab2"><label class="radio-inline" style="outline: none !important;box-shadow: none !important;"><input name="radio" type="radio"><i></i>Custom</label></a></li>
+                  </ul>
+                  <br><br>
+                  <div class = "tab-grids">
+                      <div class = "tab-grid" id = "tab1">
+                      <div id = "foodMenu">
+                        <div class = "row paddingResponsive">
+                          <div class = "col-sm-3" id = "monday" >Monday</div>
+                          <a data-toggle="tooltip" class = "priceTool" data-placement="top"><div class = "col-sm-2 menuItems" id = "mondayItem1" onclick = "highlight('mondayItem1', 0)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "mondayItem2" onclick = "highlight('mondayItem2', 1)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "mondayItem3" onclick = "highlight('mondayItem3', 2)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "mondayItem4" onclick = "highlight('mondayItem4', 3)"></div></a>
+                          <div id = "walletBalResp"><a data-toggle="tooltip" title="Wallet Balance"><div class = "col-sm-1" id = "currentBal"><span>₹</span><span id = "currentWalletBal"></span></div></a></div>
+                        </div>
+                        <div class = "row paddingResponsive">
+                          <div class = "col-sm-3" id = "tuesday">Tuesday</div>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "tuesdayItem1" onclick = "highlight('tuesdayItem1', 4)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "tuesdayItem2" onclick = "highlight('tuesdayItem2', 5)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "tuesdayItem3" onclick = "highlight('tuesdayItem3', 6)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "tuesdayItem4" onclick = "highlight('tuesdayItem4', 7)"></div></a>
+                        </div>
+                        <div class = "row paddingResponsive">
+                          <div class = "col-sm-3" id = "wednesday">Wednesday</div>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "wednesdayItem1" onclick = "highlight('wednesdayItem1', 8)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "wednesdayItem2" onclick = "highlight('wednesdayItem2', 9)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "wednesdayItem3" onclick = "highlight('wednesdayItem3', 10)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "wednesdayItem4" onclick = "highlight('wednesdayItem4', 11)"></div></a>
+                        </div>
+                        <div class = "row paddingResponsive">
+                          <div class = "col-sm-3" id = "thursday">Thursday</div>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems"  id = "thursdayItem1" onclick = "highlight('thursdayItem1', 12)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems"  id = "thursdayItem2" onclick = "highlight('thursdayItem2', 13)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems"  id = "thursdayItem3" onclick = "highlight('thursdayItem3', 14)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems"  id = "thursdayItem4" onclick = "highlight('thursdayItem4', 15)"></div></a>
+                        </div>
+                        <div id = "lastRow" class = "row">
+                          <div class = "col-sm-3" id = "friday">Friday</div>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "fridayItem1" onclick = "highlight('fridayItem1', 16)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "fridayItem2" onclick = "highlight('fridayItem2', 17)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "fridayItem3" onclick = "highlight('fridayItem3', 18)"></div></a>
+                          <a data-toggle="tooltip" class = "priceTool"><div class = "col-sm-2 menuItems" id = "fridayItem4" onclick = "highlight('fridayItem4', 19)"></div></a>
+                          <a data-toggle="tooltip" title="Bill Amount"><div class = "col-sm-1" id = "bill">₹<span id = "billAmount"></span></div></a>
+                        </div>
+                      </div>
+                      <br><br>
+                      <input id = "rchNW" class="submit" onclick="topUp('menu')" type="submit" value="Recharge Now">
+                      <input class="submit" onclick="clearSelection()" type="submit" value="Clear Selelection">
+                    </div>
+                    <div class = "tab-grid" id = "tab2">
+                      <input id="customMon" min = "0" name="amount" placeholder="Enter amount" type="number" required>
+                      <br><br>
+                      <input class="submit" onclick="topUp('custom')" type="submit" value="Recharge Now">
+                    </div>
+                  </div>
+                  <br>
+                  <br>
+
+
+                </div>
+              </div>
+
+              <!-- END Wallet Topup -->
+
+              <!-- Transaction History -->
+              <div>
+                <h3>Transaction History</h3>
+                <br>
+                <br>
+                <i aria-hidden="true" class="icon fa fa-list inner-icon"></i><br><br>
+                <select class="selectpicker show-tick" data-live-search="true" id="transPrec">
+                  <option data-tokens="day" value="1">Last Usage</option>
+                  <option data-tokens="ten" value="10">Last 10 Usages</option>
+                  <option data-tokens="thirty" value="30">Last 30 Usages</option>
+                  <option data-tokens="fifty" value="50">Last 50 Usages</option>
+                </select>
+                <br><br>
+                <input class="submit" data-target="#transModal" data-toggle="modal" onclick="transUpdate()" type="submit" value="View Now">
+              </div>
+              <!-- END Transaction history -->
+
+
+
+              <!-- About -->
+
+              <!-- END About -->
+
+              <!-- Creators -->
+              <div>
+                <div class = "creatorsCont">
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div class="w3-container">
+                        <br>
+                        <img src="https://pbs.twimg.com/profile_images/830478999377760256/uaWc--wH.jpg" alt="Derrick Picture" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Infant Derrick Gnanasusairaj</p><p class = "creatorsInfo">11th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div class="w3-container">
+                        <br>
+                        <img src="https://lh6.googleusercontent.com/-9KsoKuy-E2I/AAAAAAAAAAI/AAAAAAAAOfI/Tgwz5sXU2FE/photo.jpg" alt="Rithvik Picture" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Rithvik Vibhu</p><p class = "creatorsInfo">12th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div id="this" class="w3-container" onclick="ehs()" >
+                        <br>
+                        <img src="https://scontent-sit4-1.xx.fbcdn.net/v/t1.0-1/p160x160/16387172_393568954329151_1331662018321619455_n.jpg?oh=236b9335b8f60ed6eb30924da3d9ad01&oe=5A9534E1" alt="Gokul Picture" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Gokul. J. Kurup</p><p class = "creatorsInfo">11th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div class="w3-container">
+                        <br>
+                        <img src="https://image.ibb.co/czUmVR/rithvik_Jayashima.jpg" alt="Rithwik Picture" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Rithwik Jayasimha</p><p class = "creatorsInfo">12th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div class="w3-container">
+                        <br>
+                        <img src="https://image.ibb.co/n8qSn6/madhubushisanga.jpg" alt="Ranga Picture" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Ranga Madabushi</p><p class = "creatorsInfo">12th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div class="w3-container">
+                        <br>
+                        <img src="https://image.ibb.co/cWoy1b/IMG_20171230_WA0003.jpg" alt="Avatar" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Kartik Soni</p><p class = "creatorsInfo">11th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="w3-container">
+                    <div class="w3-card-4" style="width:100%">
+                      <div class="w3-container">
+                        <br>
+                        <img src="https://image.ibb.co/mh63um/shreyaj.jpg" alt="Avatar" class="w3-left w3-circle w3-margin-right img-responsive" style="width:60px">
+                        <p class = "creatorsInfo">Shreya J</p><p class = "creatorsInfo">11th Grade</p><br>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- END Creators -->
+
+              <!-- Profile -->
+              <div>
+                <!-- <i aria-hidden="true" class="icon fa fa-user inner-icon"></i> -->
+
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-xs-12 col-md-3">
+                      <img id="profileImage" alt="Profile picture" class="img-responsive img-circle" src="">
+                    </div>
+                    <div class="col-xs-12 col-md-9">
+                      <br><h4 id="studentName"><span></span></h4>
+                      <br><h5 id="admNumber">Admission number: <span id="user_id">BE00012314</span></h5>
+                      <h4 id="walletBal">Wallet balance: ₹ <span></span></h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- END Profile -->
+          </div>
+        </div>
+      </div>
+
+      <link href="css/easy-responsive-tabs.css" rel="stylesheet">
+      <script src="js/easyResponsiveTabs.js"></script>
+     <script src="./app.js"></script>
+    </div>
+
+  </body>
+  </html>
